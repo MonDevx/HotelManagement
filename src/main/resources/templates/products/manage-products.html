@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="~{fragments/head :: head}"></div>
+    <!-- Custom styles for this page -->
+    <link th:href="@{/vendor/datatables/dataTables.bootstrap4.min.css}" rel="stylesheet">
+</head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <!--  fragments sidebar -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <!-- End of fragments sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- fragments  topbar -->
+            <div th:replace="~{fragments/topbar :: topbar}"></div>
+            <!-- End of fragments topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-4 text-gray-800" th:text="#{product.text}"></h1>
+                <div th:if="${status == 'off'}" class="alert alert-warning alert-dismissible fade show"
+                     role="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong th:text="#{product.nostore.text}"></strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <button data-toggle="modal" data-target="#AddUserModal" class="btn btn-success btn-icon-split mb-4"
+                        th:disabled="${status == 'off'}">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-plus"></i>
+                    </span>
+                    <span class="text" th:text="#{product.add.text}"></span>
+                </button>
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <!--  message-->
+                        <div th:replace="~{fragments/message :: message}"></div>
+                        <!-- End message-->
+                        <h6 class="m-0 font-weight-bold text-primary" th:text="#{product.table.text}"></h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{product.table.id.text}"></th>
+                                    <th th:text="#{product.table.name.text}"></th>
+                                    <th th:text="#{product.table.price.text}"></th>
+                                    <th th:text="#{product.table.amount.text}"></th>
+                                    <th th:text="#{product.table.store.text}"></th>
+                                    <th th:text="#{product.table.Editordelete.text}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="product : ${list}">
+                                    <td th:text="${product.id}"></td>
+                                    <td th:text="${product.productName}"></td>
+                                    <td th:text="'$'+${{#numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}}"></td>
+                                    <td th:text="${{#numbers.formatDecimal(product.amount, 0, 'COMMA', 0, 'POINT')}}"></td>
+                                    <td th:text="${product.stores.getStoreName()}"></td>
+                                    <td><a th:href=" @{/products/edit_product(id=${product.id})}"
+                                           class="btn btn-warning btn-circle btn-sm" id="eBtn">
+                                        <i class="fas fa-edit"></i></a>
+                                        <a th:href="@{/products/delete_product(id=${product.id})}"
+                                           class="btn btn-danger btn-circle btn-sm " id="dBtn">
+                                            <i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer fragment -->
+        <div th:insert="~{fragments/footer :: footer}"></div>
+        <!-- End of Footer fragment -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+<!-- Scroll to Top Button fragment-->
+<div th:insert="~{fragments/scrolltop :: scrolltop}"></div>
+<!-- End of Scroll to Top Button fragment -->
+<!-- Delete Modal-->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel" th:text="#{product.md.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" th:text="#{product.md.body.text}"></div>
+            <div class="modal-footer">
+                <form method="get">
+                    <button class="btn btn-secondary btn-icon-split" type="button" data-dismiss="modal">
+                              <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                                   </span> <span class="text" th:text="#{button.cancel.text}"></span>
+                    </button>
+                    <a class="btn btn-danger btn-icon-split" id="delRef" type="button">
+                              <span class="icon text-white-50">
+                      <i class="fas fa-trash"></i>
+                                   </span> <span class="text" th:text="#{button.delete.text}"></span>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- EditUser Modal -->
+<div class="modal fade" id="EditUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditUserModalLabel" th:text="#{product.me.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off"
+                      th:object="${product}" method="post" class="form-horizontal" id="editform"
+                      role="form">
+                    <div class="form-row">
+                        <div class="form-group col-md-10">
+                            <label  th:text="#{product.table.id.text}"></label>
+                            <p class="ml-2 text-gray-800" id="id"></p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="productname" th:text="#{product.table.name.text}"></label>
+                            <input type="text" class="form-control" id="productname" th:field="*{productName}"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="price" th:text="#{product.table.price.text}"></label>
+                            <input type="number" class="form-control" id="price" th:field="*{price}"
+                                   required="required"/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="stores" th:text="#{product.table.store.text}"></label>
+                            <select id="stores" class="form-control" th:field="*{stores}">
+                                <option th:each="store : ${liststores}" th:value="${store.id}"
+                                        th:text="${store.storeName}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="amount" th:text="#{product.table.amount.text}"></label>
+                            <input type="number" class="form-control" id="amount" th:field="*{amount}"
+                                   required="required"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-icon-split " type="button" data-dismiss="modal">
+                             <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                                   </span> <span class="text" th:text="#{button.cancel.text}"></span>
+                        </button>
+                        <button class="btn btn-success btn-icon-split" type="submit">
+                              <span class="icon text-white-50">
+                      <i class="fas fa-sync"></i>
+                                   </span> <span class="text" th:text="#{button.update.text}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- AddUser Modal -->
+<div class="modal fade" id="AddUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddUserModalLabel" th:text="#{product.ma.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" action="#" th:action="@{/products/add_product}"
+                      th:object="${product}" method="post" class="form-horizontal"
+                      role="form">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="addproductname" th:text="#{product.table.name.text}"></label>
+                            <input type="text" class="form-control" id="addproductname" th:field="*{productName}"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="addprice" th:text="#{product.table.price.text}"></label>
+                            <input type="number" class="form-control" id="addprice" th:field="*{price}"
+                                   required="required"/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="addstores" th:text="#{product.table.store.text}"></label>
+                            <select id="addstores" class="form-control" th:field="*{stores}">
+                                <option th:each="store : ${liststores}" th:value="${store.id}"
+                                        th:text="${store.storeName}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="amount" th:text="#{product.table.amount.text}"></label>
+                            <input type="number" class="form-control" id="amount" th:field="*{amount}"
+                                   required="required"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-icon-split" type="button" data-dismiss="modal">
+                              <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                                   </span> <span class="text" th:text="#{button.cancel.text}"></span>
+                        </button>
+                        <button class="btn btn-success btn-icon-split" type="submit">
+                             <span class="icon text-white-50">
+                      <i class="fas fa-save"></i>
+                                   </span> <span class="text" th:text="#{button.save.text}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- script fragment -->
+<script th:replace="~{fragments/script :: script}"></script>
+<script th:replace="~{fragments/scriptlangdatatable :: scriptdatable}"></script>
+<!-- End script fragment -->
+<!-- Page level plugins -->
+<script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+<!-- Page level custom scripts -->
+<script th:src="@{/js/products/products.js}"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="~{fragments/head :: head}"></div>
+    <!-- Custom styles for this page -->
+    <link th:href="@{/vendor/datatables/dataTables.bootstrap4.min.css}" rel="stylesheet">
+</head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <!--  fragments sidebar -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <!-- End of fragments sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- fragments  topbar -->
+            <div th:replace="~{fragments/topbar :: topbar}"></div>
+            <!-- End of fragments topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-4 text-gray-800" th:text="#{maintenance.text}"></h1>
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary" th:text="#{maintenance.table.text}"></h6>
+                    </div>
+                    <div class="card-body">
+                        <!--  message-->
+                        <div th:replace="~{fragments/message :: message}"></div>
+                        <!-- End message-->
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{maintenance.table.id.text}"></th>
+                                    <th th:text="#{maintenance.table.fname.text}"></th>
+                                    <th th:text="#{maintenance.table.lname.text}"></th>
+                                    <th th:text="#{maintenance.table.date.text}"></th>
+                                    <th th:text="#{maintenance.table.room.text}"></th>
+                                    <th th:text="#{maintenance.table.status.text}"></th>
+                                    <th th:text="#{maintenance.table.description.text}"></th>
+                                    <th th:text="#{maintenance.table.Editordelete.text}"></th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                <tr th:each="maintenance : ${list}">
+                                    <td th:text="${maintenance.id}"></td>
+                                    <td th:text="${maintenance.firstname}"></td>
+                                    <td th:text="${maintenance.lastname}"></td>
+                                    <td th:text="${maintenance.date}"></td>
+                                    <td th:text="${maintenance.room}"></td>
+                                    <td>
+                                        <h5>
+                                        <span th:if="${maintenance.status == 'Repairing'}"
+                                              class="badge badge-warning" th:text="#{maintenance.table.Repairing.text}"></span>
+                                            <span th:if="${maintenance.status == 'The_repairs_complete'}"
+                                                  class="badge badge-success" th:text="#{maintenance.table.Therepairiscomplete.text}"></span>
+                                            <span th:if="${maintenance.status == 'Not_yet_implemented'}"
+                                                  class="badge badge-danger" th:text="#{maintenance.table.Notyetimplemented.text}"></span>
+                                        </h5>
+                                    </td>
+                                    <td>
+                                        <button th:value="${maintenance.description}"
+                                                class="btn btn-success btn-circle btn-sm " id="vBtn">
+                                            <i class="fas fa-eye"></i></button>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/maintenances/edit_maintenance(id=${maintenance.id})}"
+                                           class="btn btn-warning btn-circle btn-sm" id="eBtn">
+                                            <i class="fas fa-edit"></i></a>
+                                        <a th:href="@{/maintenances/delete_maintenance(id=${maintenance.id})}"
+                                           class="btn btn-danger btn-circle btn-sm " id="dBtn">
+                                            <i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer fragment -->
+        <div th:insert="~{fragments/footer :: footer}"></div>
+        <!-- End of Footer fragment -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button fragment-->
+<div th:insert="~{fragments/scrolltop :: scrolltop}"></div>
+<!-- End of Scroll to Top Button fragment -->
+<!-- Delete Modal-->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel" th:text="#{maintenance.md.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" th:text="#{maintenance.md.body.text}"></div>
+            <div class="modal-footer">
+                <form method="get">
+                    <button class="btn btn-secondary btn-icon-split" type="button" data-dismiss="modal">
+                              <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                                   </span> <span class="text" th:text="#{button.cancel.text}"></span>
+                    </button>
+                    <a class="btn btn-danger btn-icon-split" id="delRef" type="button" >
+                              <span class="icon text-white-50">
+                      <i class="fas fa-trash"></i>
+                                   </span> <span class="text" th:text="#{button.delete.text}"></span>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- View Modal-->
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewMModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewMModalLabel" th:text="#{maintenance.mv.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="text_description" class="text-break"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-icon-split" type="button" data-dismiss="modal">
+                              <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                                   </span> <span class="text"  th:text="#{button.closed.text}"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- EditUser Modal -->
+<div class="modal fade" id="EditUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditUserModalLabel" th:text="#{maintenance.me.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" id="editform"
+                      th:object="${maintenance}" method="post" class="form-horizontal"
+                      role="form">
+                    <div class="form-row">
+                        <div class="form-group col-md-10">
+                            <label  th:text="#{maintenance.table.id.text}"></label>
+                            <p class="ml-2 text-gray-800" id="idmaintenance"></p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="Status"  th:text="#{maintenance.table.status.text}"></label>
+                            <select id="Status" class="form-control" th:field="*{status}"  >
+                                <option th:value="Not_yet_implemented" th:text="#{maintenance.table.Notyetimplemented.text}"></option>
+                                <option th:value="Repairing" th:text="#{maintenance.table.Repairing.text}"></option>
+                                <option th:value="The_repairs_complete" th:text="#{maintenance.table.Therepairiscomplete.text}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-icon-split " type="button" data-dismiss="modal">
+                             <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                                   </span> <span class="text" th:text="#{button.cancel.text}"></span>
+                        </button>
+                        <button class="btn btn-success btn-icon-split" type="submit">
+                              <span class="icon text-white-50">
+                      <i class="fas fa-sync"></i>
+                                   </span> <span class="text"  th:text="#{button.update.text}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- script fragment -->
+<script th:replace="~{fragments/script :: script}"></script>
+<script th:replace="~{fragments/scriptlangdatatable :: scriptdatable}"></script>
+<!-- End script fragment -->
+<!-- Page level plugins -->
+<script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+<!-- Page level custom scripts -->
+<script th:src="@{/js/maintenance/maintenances.js}"></script>
+</body>
+</html>

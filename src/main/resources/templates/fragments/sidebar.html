@@ -1,0 +1,92 @@
+
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" th:fragment="sidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="${'/dashboard'}">
+        <div class="sidebar-brand-icon ">
+            <i class="fas fa-hotel rotate-15"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3"><span th:text="#{side.text}"> </span> <sup th:text="#{side.sub.text}"></sup></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - DashboardService -->
+    <li class="nav-item ">
+        <a class="nav-link" th:href="${'/dashboard'}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span  th:text="#{dashboard.text}"></span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <!-- Heading -->
+    <div class="sidebar-heading" th:text="#{people.text}">
+
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item ">
+        <a class="nav-link " th:href="${'/users/manage-users'}">
+            <i class="fas fa-fw fa-users"></i>
+            <span th:text="#{users.text}"></span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Utilities Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link " th:href="${'/employees/manage-employees'}">
+            <i class="fas fa-fw fa-user-tie"></i>
+            <span th:text="#{employees.text}"></span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider ">
+
+    <!-- Heading -->
+    <div class="sidebar-heading" th:text="#{maw.text}">
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link" th:href="${'/stores/manage-stores'}">
+            <i class="fas fa-fw fa-store"></i>
+            <span th:text="#{stores.text}"></span>
+        </a>
+    </li>
+
+
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+        <a class="nav-link " th:href="${'/products/manage-products'}">
+            <i class="fas fa-fw fa-utensils"></i>
+            <span th:text="#{products.text}"></span></a>
+    </li>
+
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapserepair"
+           aria-expanded="true" aria-controls="collapseUtilities">
+            <i class="fas fa-fw fa-tools"></i>
+            <span th:text="#{m.text}"></span></a>
+        <div id="collapserepair" class="collapse" aria-labelledby="headingUtilities"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" th:href="${'/maintenances/add-maintenance'}" th:text="#{ad.text}"></a>
+                <a class="collapse-item" th:href="${'/maintenances/manage-maintenance'}" th:text="#{mm.text}"></a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+</ul>
+<!-- End of Sidebar -->

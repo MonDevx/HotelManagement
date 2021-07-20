@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="~{fragments/head :: head}"></div>
+    <!-- Custom styles for this page -->
+    <link th:href="@{/vendor/datatables/dataTables.bootstrap4.min.css}" rel="stylesheet">
+</head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <!--  fragments sidebar -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <!-- End of fragments sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- fragments  topbar -->
+            <div th:insert="~{fragments/topbar :: topbar}"></div>
+            <!-- End of fragments topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800" th:text="#{employee.text}"></h1>
+                    <div class="d-flex flex-row ">
+                        <a th:href="@{/employees/report(type=pdf)}"
+                           class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mx-1">
+                            <i class="fas fa-download fa-sm text-white-50 mr-1"></i> <span
+                                th:text="#{employee.pdf.text}"></span></a>
+                        <a th:href="@{/employees/report(type=xls)}"
+                           class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-download fa-sm text-white-50 mr-1"></i><span
+                                th:text="#{employee.excel.text}"></span></a>
+                    </div>
+                </div>
+                <button data-toggle="modal" data-target="#AddUserModal" class="btn btn-success btn-icon-split mb-4">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-plus"></i>
+                    </span>
+                    <span class="text" th:text="#{employee.add.text}"></span>
+                </button>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary" th:text="#{employee.table.text}"></h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <!--  message-->
+                            <div th:replace="~{fragments/message :: message}"></div>
+                            <!-- End message-->
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{employee.table.id.text}"></th>
+                                    <th th:text="#{employee.table.fname.text}"></th>
+                                    <th th:text="#{employee.table.lname.text}"></th>
+                                    <th th:text="#{employee.table.phone.text}"></th>
+                                    <th th:text="#{employee.table.position.text}"></th>
+                                    <th th:text="#{employee.table.salary.text}"></th>
+                                    <th th:text="#{employee.table.address.text}"></th>
+                                    <th th:text="#{employee.table.Editordelete.text}"></th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                <tr th:each="employee : ${list}">
+                                    <td th:text="${employee.id}"></td>
+                                    <td th:text="${employee.firstName}"></td>
+                                    <td th:text="${employee.lastName}"></td>
+                                    <td th:text="${employee.phone}"></td>
+                                    <td th:text="${employee.getPositions().getPosition_name()}"></td>
+                                    <td th:text="'$'+${{#numbers.formatDecimal(employee.salary, 0, 'COMMA', 2, 'POINT')}}"></td>
+                                    <td>
+                                        <button th:value="${employee.address}"
+                                                class="btn btn-success btn-circle btn-sm " id="vBtn">
+                                            <i class="fas fa-eye"></i></button>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/employees/edit_employee(id=${employee.id})}"
+                                           class="btn btn-warning btn-circle btn-sm" id="eBtn">
+                                            <i class="fas fa-edit"></i></a>
+                                        <a th:href="@{/employees/delete_employee(id=${employee.id})}"
+                                           class="btn btn-danger btn-circle btn-sm " id="dBtn">
+                                            <i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer fragment -->
+        <div th:insert="~{fragments/footer :: footer}"></div>
+        <!-- End of Footer fragment -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+<!-- Delete Modal-->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel" th:text="#{employee.md.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" th:text="#{employee.md.body.text}"></div>
+            <div class="modal-footer">
+                <form method="get">
+                    <button class="btn btn-secondary btn-icon-split" type="button" data-dismiss="modal">
+                           <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                    </span> <span class="text" th:text="#{button.cancel.text}"></span>
+                    </button>
+                    <a href="" class="btn btn-danger btn-icon-split" id="delRef">
+                            <span class="icon text-white-50">
+                      <i class="fas fa-trash"></i>
+                    </span> <span class="text" th:text="#{button.delete.text}"></span>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- EditUser Modal -->
+<div class="modal fade" id="EditUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditUserModalLabel" th:text="#{employee.me.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" id="editform"
+                      th:object="${employee}" method="post" class="form-horizontal"
+                      role="form">
+                    <div class="form-row">
+                        <div class="form-group col-md-9">
+                            <label  th:text="#{employee.table.id.text}"></label>
+                            <p class="ml-2 text-gray-800" id="idemployee"></p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="firstName" th:text="#{employee.table.fname.text}"></label>
+                            <input type="text" class="form-control" id="firstName" th:field="*{firstName}"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group  col-md-6">
+                            <label for="lastName" th:text="#{employee.table.lname.text}"></label>
+                            <input type="text" class="form-control" id="lastName" th:field="*{lastName}"
+                                   required="required"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group  col-md-6">
+                            <label for="salary" th:text="#{employee.table.salary.text}"></label>
+                            <input type="number" class="form-control" id="salary" th:field="*{salary}"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group  col-md-6">
+                            <label for="aphone" th:text="#{employee.table.phone.text}"></label> <small
+                                class="float-right" th:text="#{employee.ma.format}"></small>
+                            <input type="tel" class="form-control" id="aphone"
+                                   required="required" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="12"
+                                   minlength="12" th:field="*{phone}"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label for="Position" th:text="#{employee.table.position.text}"></label>
+                            <select id="Position" class="form-control" th:field="*{positions}">
+                                <option th:each="position : ${listposition}" th:value="${position.id}"
+                                        th:text="${position.position_name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" th:text="#{employee.table.address.text}"></label>
+                        <textarea class="form-control" id="address" rows="3" maxlength="50" minlength="10"
+                                  required="required" th:field="*{address}"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-icon-split" type="button" data-dismiss="modal">
+                                 <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                    </span> <span class="text" th:text="#{button.cancel.text}"></span>
+                        </button>
+                        <button class="btn btn-success btn-icon-split" type="submit">
+                              <span class="icon text-white-50">
+                      <i class="fas fa-sync"></i>
+                    </span> <span class="text" th:text="#{button.update.text}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- AddUser Modal -->
+<div class="modal fade" id="AddUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddUserModalLabel" th:text="#{employee.ma.head.text}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" action="#" th:action="@{/employees/add_employee}"
+                      th:object="${employee}" method="post" class="form-horizontal"
+                      role="form">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="afirstName" th:text="#{employee.table.fname.text}"></label>
+                            <input type="text" class="form-control" id="afirstName" th:field="*{firstName}"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group  col-md-6">
+                            <label for="alastName" th:text="#{employee.table.lname.text}"></label>
+                            <input type="text" class="form-control" id="alastName" th:field="*{lastName}"
+                                   required="required"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group  col-md-6">
+                            <label for="asalary" th:text="#{employee.table.salary.text}"></label>
+                            <input type="number" class="form-control" id="asalary" th:field="*{salary}"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group  col-md-6">
+                            <label for="aphone" th:text="#{employee.table.phone.text}"></label> <small
+                                class="float-right" th:text="#{employee.ma.format}"></small>
+                            <input type="tel" class="form-control" id="aphone"
+                                   required="required" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="12"
+                                   minlength="12" th:field="*{phone}"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="aPosition" th:text="#{employee.table.position.text}"></label>
+                            <select id="aPosition" class="form-control" th:field="*{positions}">
+                                <option th:each="position : ${listposition}" th:value="${position.id}"
+                                        th:text="${position.position_name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" th:text="#{employee.table.address.text}"></label>
+                        <textarea class="form-control" id="address" rows="3" maxlength="50" minlength="10"
+                                  required="required" th:field="*{address}"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-icon-split" type="button" data-dismiss="modal">
+                                   <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                                   </span> <span class="text" th:text="#{button.cancel.text}"></span></button>
+                        <button class="btn btn-success btn-icon-split" type="submit">
+                             <span class="icon text-white-50">
+                      <i class="fas fa-save"></i>
+                                   </span> <span class="text" th:text="#{button.save.text}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- View Modal-->
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewMModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewMModalLabel" th:text="#{employee.table.address.text}">
+                </h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="text_Address" class="text-break"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-icon-split" type="button" data-dismiss="modal">
+                           <span class="icon text-white-50">
+                      <i class="fas fa-times"></i>
+                                   </span> <span class="text" th:text="#{button.closed.text}"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Scroll to Top Button fragment-->
+<div th:insert="~{fragments/scrolltop :: scrolltop}"></div>
+<!-- End of Scroll to Top Button fragment -->
+
+<!-- script fragment -->
+<script th:replace="~{fragments/script :: script}"></script>
+<script th:replace="~{fragments/scriptlangdatatable :: scriptdatable}"></script>
+<!-- End script fragment -->
+<!-- Page level plugins -->
+<script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+<!-- Page level custom scripts -->
+<script th:src="@{/js/employees/employees.js}"></script>
+
+</body>
+</html>

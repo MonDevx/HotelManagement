@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="~{fragments/head :: head}"></div>
+    <!-- Custom styles this page-->
+    <link rel="stylesheet" th:href="@{/css/validation.css}">
+    <!-- Custom styles for this page -->
+    <link th:href="@{/vendor/datatables/dataTables.bootstrap4.min.css}" rel="stylesheet">
+</head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <!--  fragments sidebar -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <!-- End of fragments sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- fragments  topbar -->
+            <div th:replace="~{fragments/topbar :: topbar}"></div>
+            <!-- End of fragments topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-4 text-gray-800" th:text="#{add-maintenance.text}"></h1>
+                <!-- Form -->
+                <div class="col-lg-7 mx-auto">
+                    <div class="card shadow mb-4 ">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary" th:text="#{add-maintenance.form.text}"></h6>
+                        </div>
+                        <div class="card-body">
+                            <!--  message-->
+                            <div th:replace="~{fragments/message :: message}"></div>
+                            <!-- End message-->
+                            <form autocomplete="off" action="#" th:action="@{/maintenances/add_maintenance}"
+                                  th:object="${maintenance}" method="post" class="form-horizontal"
+                                  role="form">
+                                <div class="form-row">
+                                    <div class="form-group  col-md-4 ">
+                                        <div class="my-1">
+                                        </div>
+                                        <label for="exampleFormControlInput1"
+                                               th:text="#{add-maintenance.fname.text}"></label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1"
+                                               th:field="*{firstname} " required>
+                                    </div>
+                                    <div class="form-group col-md-4 ">
+                                        <div class="my-1">
+                                        </div>
+                                        <label for="exampleFormControlInput2"
+                                               th:text="#{add-maintenance.lname.text}"></label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput2"
+                                               th:field="*{lastname}" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="exampleFormControlSelect1"
+                                               th:text="#{add-maintenance.Room.text}"></label>
+                                        <select class="form-control" id="exampleFormControlSelect1" th:field="*{room}">
+                                            <option th:value="A101" th:text="A101"></option>
+                                            <option th:value="A102" th:text="A102"></option>
+                                            <option th:value="A103" th:text="A103"></option>
+                                            <option th:value="A201" th:text="A201"></option>
+                                            <option th:value="A202" th:text="A202"></option>
+                                            <option th:value="A203" th:text="A203"></option>
+                                            <option th:value="A301" th:text="A201"></option>
+                                            <option th:value="A302" th:text="A202"></option>
+                                            <option th:value="A303" th:text="A203"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-8">
+                                        <div class="my-1">
+                                        </div>
+                                        <label for="exampleFormControlTextarea1"
+                                               th:text="#{add-maintenance.description.text}"></label>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1"
+                                                  rows="3" th:field="*{description}" required></textarea>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success float-right">
+                                    <i class="fas fa-fw fa-save mr-1"></i><span
+                                        th:text="#{button.save.text}"></span>
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer fragment -->
+        <div th:insert="~{fragments/footer :: footer}"></div>
+        <!-- End of Footer fragment -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+<!-- Scroll to Top Button fragment-->
+<div th:insert="~{fragments/scrolltop :: scrolltop}"></div>
+<!-- End of Scroll to Top Button fragment -->
+<!-- script fragment -->
+<script th:replace="~{fragments/script :: script}"></script>
+<!-- End script fragment -->
+<!-- Page level plugins -->
+<script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+<!-- Page level custom scripts -->
+<script th:src="@{/js/maintenance/maintenances.js}"></script>
+</body>
+</html>

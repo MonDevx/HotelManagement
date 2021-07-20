@@ -1,0 +1,26 @@
+<th:block  th:fragment="scriptdatable">
+    <!--datatablelang-->
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                "language": {
+                    "emptyTable": [[#{emptyTable}]],
+                    "info": [[#{info}]],
+                    "infoEmpty": [[#{infoEmpty}]],
+                    "infoFiltered": [[#{infoFiltered}]],
+                    "lengthMenu": [[#{lengthMenu}]],
+                    "loadingRecords": [[#{loadingRecords}]],
+                    "processing": [[#{processing}]],
+                    "search": [[#{search}]],
+                    "zeroRecords": [[#{zeroRecords}]],
+                    "paginate": {
+                        "first": [[#{first}]],
+                        "last": [[#{last}]],
+                        "next": [[#{next}]],
+                        "previous": [[#{previous}]]
+                    },
+                }
+            });
+        });
+    </script>
+</th:block>

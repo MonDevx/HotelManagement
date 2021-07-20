@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="~{fragments/head :: head}" ></head>
+
+
+<body class="bg-gradient-primary">
+<div class="container">
+
+    <div class="row justify-content-center">
+
+        <div class="col-xl-5 col-lg-12 col-md-9">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body">
+                    <!-- Nav Item - lang -->
+                    <div class="nav-item dropdown  float-right">
+                        <a class="nav-link dropdown-toggle" href="#" id="Dropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span th:if="${#messages.msg('lang')== 'English (US)'}"
+                                  class="flag-icon flag-icon-us mr-2"></span>
+                            <span th:if="${#messages.msg('lang')== 'ไทย'}" class="flag-icon flag-icon-th mr-2"></span>
+                            <span th:if="${#messages.msg('lang')== '中國'}" class="flag-icon flag-icon-cn mr-2"></span>
+                            <span class="text-gray-600 small" th:text="#{lang}"></span>
+
+                        </a>
+                        <!-- Dropdown - lang  -->
+                        <div class="dropdown-menu dropdown-menu-right "
+                             aria-labelledby="Dropdown">
+                            <a class="dropdown-item" hreflang="en" th:href="@{?lang=en}">
+                                <span class="flag-icon flag-icon-us mr-2"></span>
+                                <span class="  text-dark " th:text="#{lang.eng}"></span>
+                            </a>
+                            <a class="dropdown-item " hreflang="th" th:href="@{?lang=th}">
+                                <span class="flag-icon flag-icon-th mr-2"></span>
+                                <span class="  text-dark " th:text="#{lang.th}"></span>
+                            </a>
+                            <a class="dropdown-item " hreflang="ch" th:href="@{?lang=ch}">
+                                <span class="flag-icon flag-icon-cn mr-2"></span>
+                                <span class=" text-dark " th:text="#{lang.ch}"></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mx-auto">
+                        <div class="p-5">
+                            <form th:action="@{/login}" method="POST" class="user">
+                                <div class="text-center pt-4">
+                                    <div class="form-group">
+                                        <h1 class="h4 text-gray-900 " th:text="#{title.text}"></h1>
+                                        <h1 class="text-gray-600 small mb-4" th:text="#{sub.title.text}"></h1>
+                                    </div>
+                                    <div th:if="${param.error}" class="alert alert-danger alert-dismissible">
+                                        <div th:text="#{error.text}"></div>
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" class="form-control form-control-user"
+                                               th:placeholder="#{placeholder.mail.text}"
+                                               id="email" name="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control form-control-user"
+                                               th:placeholder="#{placeholder.pass.text}"
+                                               id="password" name="password">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox small">
+                                        <input type="checkbox" class="custom-control-input" id="remember-me"
+                                               name="remember-me">
+                                        <label class="custom-control-label" for="remember-me"
+                                               th:text="#{remember.text}"></label>
+                                    </div>
+                                </div>
+
+
+                                    <button class="btn btn-primary btn-user btn-block" name="Submit" value="Login"
+                                            type="Submit"
+                                            th:text="#{login.text}"></button>
+                                    <hr>
+                                    <div class="text-center">
+                                        <a class="small" th:href="@{/forgot-password}" th:text="#{forgotpassword.text}"></a>
+                                    </div>
+                                    <p class="mt-3 mb-3 text-muted text-center" >@ CopyRight by Bearhug Teamwork 2019 Template by
+                                        SB
+                                        Admin 2 </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!-- script fragment -->
+<script th:replace="~{fragments/script :: script}"></script>
+
+<!-- End script fragment -->
+</body>
+</html>
