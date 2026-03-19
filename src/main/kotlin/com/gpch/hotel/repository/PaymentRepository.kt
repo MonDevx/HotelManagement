@@ -12,6 +12,9 @@ interface PaymentRepository : JpaRepository<Payment, Long> {
     @Query("select coalesce(sum(p.amount), 0) from Payment p where p.booking.id = :bookingId")
     fun totalPaidForBooking(@Param("bookingId") bookingId: Long): Int
 
+    @Query("select p.booking.id, coalesce(sum(p.amount), 0) from Payment p where p.booking.id in :bookingIds group by p.booking.id")
+    fun totalPaidForBookings(@Param("bookingIds") bookingIds: Collection<Long>): List<Array<Any>>
+
     @Query("select coalesce(sum(p.amount), 0) from Payment p where p.paymentDate between :start and :end")
     fun sumAmountBetween(@Param("start") start: LocalDate, @Param("end") end: LocalDate): Int
 }

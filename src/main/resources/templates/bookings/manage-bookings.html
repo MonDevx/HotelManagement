@@ -96,9 +96,9 @@
                                             </td>
                                             <td><span class="badge badge-info" th:text="${bookingItem.status}"></span></td>
                                             <td th:text="${'$ ' + #numbers.formatDecimal(bookingItem.totalPrice, 0, 'COMMA', 2, 'POINT')}"></td>
-                                            <td>
-                                                <div th:text="${'$ ' + #numbers.formatDecimal(paymentService.totalPaidForBooking(bookingItem.id), 0, 'COMMA', 2, 'POINT')}"></div>
-                                                <div class="small text-danger" th:text="${'Balance: $' + #numbers.formatDecimal(bookingItem.totalPrice - paymentService.totalPaidForBooking(bookingItem.id), 0, 'COMMA', 2, 'POINT')}"></div>
+                                            <td th:with="paid=${paidTotals[bookingItem.id] != null ? paidTotals[bookingItem.id] : 0}">
+                                                <div th:text="${'$ ' + #numbers.formatDecimal(paid, 0, 'COMMA', 2, 'POINT')}"></div>
+                                                <div class="small text-danger" th:text="${'Balance: $' + #numbers.formatDecimal(bookingItem.totalPrice - paid, 0, 'COMMA', 2, 'POINT')}"></div>
                                             </td>
                                             <td>
                                                 <a class="btn btn-warning btn-circle btn-sm mb-1" th:href="@{/bookings/manage-bookings(editId=${bookingItem.id})}"><i class="fas fa-edit"></i></a>

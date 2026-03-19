@@ -26,4 +26,12 @@ class PaymentService(private val paymentRepository: PaymentRepository) {
     fun deleteById(id: Long) = paymentRepository.deleteById(id)
 
     fun totalPaidForBooking(bookingId: Long): Int = paymentRepository.totalPaidForBooking(bookingId)
+
+    fun totalPaidForBookings(bookingIds: Collection<Long>): Map<Long, Int> {
+        if (bookingIds.isEmpty()) {
+            return emptyMap()
+        }
+        return paymentRepository.totalPaidForBookings(bookingIds)
+            .associate { row -> (row[0] as Number).toLong() to (row[1] as Number).toInt() }
+    }
 }

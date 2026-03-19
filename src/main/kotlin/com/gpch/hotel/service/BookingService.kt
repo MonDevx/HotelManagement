@@ -47,6 +47,7 @@ class BookingService(
         validateDates(checkInDate, checkOutDate)
         require(booking.guest != null) { "Guest is required" }
         require(booking.guestCount > 0) { "Guest count must be greater than zero" }
+        require(booking.additionalCharges >= 0) { "Additional charges must not be negative" }
 
         val resolvedRoom = resolveRoom(booking, checkInDate, checkOutDate)
         val roomType = resolvedRoom.roomType ?: booking.roomType ?: throw IllegalArgumentException("Room type is required")
@@ -81,6 +82,9 @@ class BookingService(
         val checkIn = it.checkInDate
         checkIn != null && (checkIn.isEqual(start) || checkIn.isAfter(start)) && (checkIn.isEqual(end) || checkIn.isBefore(end))
     }
+
+    fun findByGuestIdsOrdered(guestIds: Collection<Long>): List<Booking> =
+        if (guestIds.isEmpty()) emptyList() else bookingRepository.findByGuestIdInOrderByCheckInDateAscIdAsc(guestIds)
 
     fun calculateTotalPrice(
         roomType: RoomType,
@@ -151,16 +155,7 @@ class BookingService(
     private fun updateStatus(id: Long, status: String): Booking {
         val booking = findById(id) ?: throw IllegalArgumentException("Booking not found")
         booking.status = status
-        if (status == "checked-out") {
-            booking.room?.status = "available"
-        } else if (status == "cancelled" || status == "no-show") {
-            booking.room?.status = "available"
-        } else if (status == "checked-in") {
-            booking.room?.status = "checked-in"
-        } else if (status == "confirmed" || status == "pending") {
-            booking.room?.status = "booked"
-        }
-        booking.room?.let { roomRepository.save(it) }
+        updateRoomStatus(booking.room, status)
         return bookingRepository.save(booking)
     }
 

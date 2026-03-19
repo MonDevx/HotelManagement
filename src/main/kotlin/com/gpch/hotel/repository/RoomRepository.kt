@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface RoomRepository : JpaRepository<Room, Long> {
     fun findAllByRoomTypeId(roomTypeId: Long): List<Room>
     fun countByStatus(status: String): Long
+    fun countByStatusIgnoreCase(status: String): Long
 }

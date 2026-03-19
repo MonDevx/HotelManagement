@@ -43,9 +43,9 @@ class DashboardService @Autowired constructor(
 
     fun countRooms(): Long = roomRepository.count()
 
-    fun countAvailableRooms(): Long = roomRepository.findAll().count { it.status.equals("available", ignoreCase = true) }.toLong()
+    fun countAvailableRooms(): Long = roomRepository.countByStatusIgnoreCase("available")
 
-    fun countActiveStays(): Long = bookingRepository.findAll().count { it.status.equals("checked-in", ignoreCase = true) }.toLong()
+    fun countActiveStays(): Long = bookingRepository.countByStatusIgnoreCase("checked-in")
 
     fun occupancyRate(): Int {
         val totalRooms = countRooms()

@@ -22,12 +22,13 @@ class PaymentsController(
     @GetMapping("manage-payments")
     fun manage(@RequestParam(required = false) editId: Long?): ModelAndView {
         val modelAndView = ModelAndView("payments/manage-payments")
+        val payments = paymentService.findAll()
         modelAndView.addObject("payment", editId?.let { paymentService.findById(it) } ?: Payment())
-        modelAndView.addObject("list", paymentService.findAll())
+        modelAndView.addObject("list", payments)
         modelAndView.addObject("bookings", bookingService.findAll())
         modelAndView.addObject("methods", listOf("cash", "bank-transfer", "credit-card"))
         modelAndView.addObject("paymentTypes", listOf("deposit", "balance"))
-        modelAndView.addObject("paymentService", paymentService)
+        modelAndView.addObject("paidTotals", paymentService.totalPaidForBookings(payments.mapNotNull { it.booking?.id }))
         return modelAndView
     }
 

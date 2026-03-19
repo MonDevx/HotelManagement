@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
@@ -94,6 +95,31 @@ class BookingServiceTest {
 
         assertEquals("checked-out", updated.status)
         assertEquals("available", room.status)
+    }
+
+    @Test
+    fun `check out keeps maintenance room unchanged`() {
+        val roomType = roomType(1L)
+        val room = room(11L, "102", roomType, status = "maintenance")
+        val booking = booking(id = 5L, roomType = roomType, room = room, status = "checked-in")
+        `when`(bookingRepository.findById(5L)).thenReturn(Optional.of(booking))
+        `when`(bookingRepository.save(booking)).thenReturn(booking)
+
+        val updated = bookingService.checkOut(5L)
+
+        assertEquals("checked-out", updated.status)
+        assertEquals("maintenance", room.status)
+        verify(roomRepository, never()).save(room)
+    }
+
+    @Test
+    fun `save rejects negative additional charges`() {
+        val booking = booking(roomType = roomType(1L))
+        booking.additionalCharges = -1
+
+        assertThrows(IllegalArgumentException::class.java) {
+            bookingService.save(booking)
+        }
     }
 
     private fun booking(

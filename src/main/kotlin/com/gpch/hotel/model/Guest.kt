@@ -26,7 +26,7 @@ class Guest {
     @Column(name = "identity_number")
     var identityNumber: String? = null
 
-    @OneToMany(mappedBy = "guest", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "guest", fetch = FetchType.LAZY)
     var bookings: MutableList<Booking> = mutableListOf()
 
     fun fullName(): String = listOf(firstName, lastName).filterNot { it.isNullOrBlank() }.joinToString(" ")

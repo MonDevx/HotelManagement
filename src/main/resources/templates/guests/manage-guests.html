@@ -63,8 +63,8 @@
                                             </td>
                                             <td th:text="${guestItem.identityNumber}"></td>
                                             <td>
-                                                <div th:text="${guestItem.bookings.size()} + ' booking(s)'" ></div>
-                                                <div class="small text-muted" th:if="${!guestItem.bookings.isEmpty()}" th:text="${'Latest: ' + guestItem.bookings[guestItem.bookings.size() - 1].status}"></div>
+                                                <div th:text="${(guestBookingCounts[guestItem.id] != null ? guestBookingCounts[guestItem.id] : 0) + ' booking(s)'}" ></div>
+                                                <div class="small text-muted" th:if="${guestLatestStatuses[guestItem.id] != null}" th:text="${'Latest: ' + guestLatestStatuses[guestItem.id]}"></div>
                                             </td>
                                             <td>
                                                 <a class="btn btn-warning btn-circle btn-sm" th:href="@{/guests/manage-guests(editId=${guestItem.id})}"><i class="fas fa-edit"></i></a>

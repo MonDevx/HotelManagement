@@ -57,7 +57,7 @@
                                             <td>
                                                 <div th:text="${'#' + paymentItem.booking.id}"></div>
                                                 <div class="small text-muted" th:text="${paymentItem.booking.guest != null ? paymentItem.booking.guest.fullName() : '-'}"></div>
-                                                <div class="small text-danger" th:text="${'Balance: $' + #numbers.formatDecimal(paymentItem.booking.totalPrice - paymentService.totalPaidForBooking(paymentItem.booking.id), 0, 'COMMA', 2, 'POINT')}"></div>
+                                                <div class="small text-danger" th:with="paid=${paidTotals[paymentItem.booking.id] != null ? paidTotals[paymentItem.booking.id] : 0}" th:text="${'Balance: $' + #numbers.formatDecimal(paymentItem.booking.totalPrice - paid, 0, 'COMMA', 2, 'POINT')}"></div>
                                             </td>
                                             <td th:text="${paymentItem.paymentDate}"></td>
                                             <td th:text="${paymentItem.paymentMethod}"></td>

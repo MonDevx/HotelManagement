@@ -34,6 +34,7 @@ class BookingsController(
         @RequestParam(required = false) availabilityRoomTypeId: Long?
     ): ModelAndView {
         val modelAndView = ModelAndView("bookings/manage-bookings")
+        val bookings = bookingService.findAll()
         val availableRooms = if (!availabilityCheckIn.isNullOrBlank() && !availabilityCheckOut.isNullOrBlank()) {
             try {
                 bookingService.findAvailableRooms(
@@ -48,13 +49,13 @@ class BookingsController(
             emptyList()
         }
         modelAndView.addObject("booking", editId?.let { bookingService.findById(it) } ?: Booking())
-        modelAndView.addObject("list", bookingService.findAll())
+        modelAndView.addObject("list", bookings)
         modelAndView.addObject("guests", guestService.findAll())
         modelAndView.addObject("roomTypes", roomTypeService.findAll())
         modelAndView.addObject("rooms", roomService.findAll())
         modelAndView.addObject("statuses", BookingService.bookingStatuses)
         modelAndView.addObject("availableRooms", availableRooms)
-        modelAndView.addObject("paymentService", paymentService)
+        modelAndView.addObject("paidTotals", paymentService.totalPaidForBookings(bookings.map { it.id }.filter { it != 0L }))
         modelAndView.addObject("availabilityCheckIn", availabilityCheckIn ?: "")
         modelAndView.addObject("availabilityCheckOut", availabilityCheckOut ?: "")
         modelAndView.addObject("availabilityRoomTypeId", availabilityRoomTypeId)
