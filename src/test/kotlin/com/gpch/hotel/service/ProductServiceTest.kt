@@ -3,8 +3,10 @@ package com.gpch.hotel.service
 import com.gpch.hotel.model.Product
 import com.gpch.hotel.model.Store
 import com.gpch.hotel.repository.ProductRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -13,8 +15,14 @@ import java.util.Optional
 
 class ProductServiceTest {
 
-    private val productRepository = mock(ProductRepository::class.java)
-    private val productService = ProductService(productRepository)
+    private lateinit var productRepository: ProductRepository
+    private lateinit var productService: ProductService
+
+    @BeforeEach
+    fun setUp() {
+        productRepository = mock(ProductRepository::class.java)
+        productService = ProductService(productRepository)
+    }
 
     @Test
     fun `find all returns repository results`() {
@@ -50,6 +58,16 @@ class ProductServiceTest {
         assertEquals(updatedProduct.price, existingProduct.price)
         assertEquals(updatedProduct.stores, existingProduct.stores)
         verify(productRepository).save(existingProduct)
+    }
+
+    @Test
+    fun `update product throws when product does not exist`() {
+        val updatedProduct = product(id = 8L, name = "Juice", price = 20)
+        `when`(productRepository.findById(8L)).thenReturn(Optional.empty())
+
+        assertThrows(NullPointerException::class.java) {
+            productService.updateProduct(updatedProduct)
+        }
     }
 
     private fun product(id: Long, name: String = "Product", price: Int = 0, store: Store? = null): Product {

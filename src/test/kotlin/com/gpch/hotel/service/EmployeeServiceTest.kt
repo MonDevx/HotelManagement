@@ -3,8 +3,10 @@ package com.gpch.hotel.service
 import com.gpch.hotel.model.Employee
 import com.gpch.hotel.model.Position
 import com.gpch.hotel.repository.EmployeeRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -13,8 +15,14 @@ import java.util.Optional
 
 class EmployeeServiceTest {
 
-    private val employeeRepository = mock(EmployeeRepository::class.java)
-    private val employeeService = EmployeeService(employeeRepository)
+    private lateinit var employeeRepository: EmployeeRepository
+    private lateinit var employeeService: EmployeeService
+
+    @BeforeEach
+    fun setUp() {
+        employeeRepository = mock(EmployeeRepository::class.java)
+        employeeService = EmployeeService(employeeRepository)
+    }
 
     @Test
     fun `find all returns repository results`() {
@@ -69,6 +77,16 @@ class EmployeeServiceTest {
         assertEquals(updatedEmployee.phone, existingEmployee.phone)
         assertEquals(updatedEmployee.address, existingEmployee.address)
         verify(employeeRepository).save(existingEmployee)
+    }
+
+    @Test
+    fun `update employee throws when employee does not exist`() {
+        val updatedEmployee = employee(id = 5L, firstName = "John")
+        `when`(employeeRepository.findById(5L)).thenReturn(Optional.empty())
+
+        assertThrows(NullPointerException::class.java) {
+            employeeService.updateEmployee(updatedEmployee)
+        }
     }
 
     private fun employee(
