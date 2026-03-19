@@ -25,7 +25,5 @@ class PaymentService(private val paymentRepository: PaymentRepository) {
 
     fun deleteById(id: Long) = paymentRepository.deleteById(id)
 
-    fun totalPaidForBooking(bookingId: Long): Int = paymentRepository.findAll()
-        .filter { it.booking?.id == bookingId }
-        .sumOf { it.amount }
+    fun totalPaidForBooking(bookingId: Long): Int = paymentRepository.totalPaidForBooking(bookingId)
 }

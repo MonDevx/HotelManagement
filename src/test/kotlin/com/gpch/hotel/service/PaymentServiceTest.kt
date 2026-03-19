@@ -45,13 +45,7 @@ class PaymentServiceTest {
 
     @Test
     fun `total paid sums payments for selected booking`() {
-        `when`(paymentRepository.findAll()).thenReturn(
-            listOf(
-                payment(id = 1L, bookingId = 5L, amount = 100),
-                payment(id = 2L, bookingId = 5L, amount = 50),
-                payment(id = 3L, bookingId = 6L, amount = 90)
-            )
-        )
+        `when`(paymentRepository.totalPaidForBooking(5L)).thenReturn(150)
 
         val total = paymentService.totalPaidForBooking(5L)
 

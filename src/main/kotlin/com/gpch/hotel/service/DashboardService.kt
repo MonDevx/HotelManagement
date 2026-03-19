@@ -79,19 +79,7 @@ class DashboardService @Autowired constructor(
         return revenueFor(today.withDayOfYear(1), today.withDayOfYear(today.lengthOfYear()))
     }
 
-    private fun bookingsFor(start: LocalDate, end: LocalDate): Long = bookingRepository.findAll().count {
-        val checkInDate = it.checkInDate
-        checkInDate != null &&
-            (checkInDate.isEqual(start) || checkInDate.isAfter(start)) &&
-            (checkInDate.isEqual(end) || checkInDate.isBefore(end))
-    }.toLong()
+    private fun bookingsFor(start: LocalDate, end: LocalDate): Long = bookingRepository.countByCheckInDateBetween(start, end)
 
-    private fun revenueFor(start: LocalDate, end: LocalDate): Int = paymentRepository.findAll()
-        .filter {
-            val paymentDate = it.paymentDate
-            paymentDate != null &&
-                (paymentDate.isEqual(start) || paymentDate.isAfter(start)) &&
-                (paymentDate.isEqual(end) || paymentDate.isBefore(end))
-        }
-        .sumOf { it.amount }
+    private fun revenueFor(start: LocalDate, end: LocalDate): Int = paymentRepository.sumAmountBetween(start, end)
 }
