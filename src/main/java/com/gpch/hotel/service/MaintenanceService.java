@@ -32,11 +32,11 @@ public class MaintenanceService {
         return maintenanceRepository.findAll();
     }
 
-    public void DeleteMaintenanceById(String id) {
+    public void DeleteMaintenanceById(long id) {
         maintenanceRepository.deleteById(id);
     }
 
-    public Maintenance FindMaintenanceById(String id) {
+    public Maintenance FindMaintenanceById(long id) {
         return maintenanceRepository.findById(id);
     }
 

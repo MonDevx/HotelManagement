@@ -24,11 +24,11 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public void DeleteEmployeeById(String id) {
+    public void DeleteEmployeeById(long id) {
         employeeRepository.deleteById(id);
     }
 
-    public Employee FindEmployeeById(String id) {
+    public Employee FindEmployeeById(long id) {
         return employeeRepository.findById(id);
     }
 

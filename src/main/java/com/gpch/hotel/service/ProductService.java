@@ -23,18 +23,18 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public void DeleteProductById(String id) {
+    public void DeleteProductById(long id) {
         productRepository.deleteById(id);
     }
 
-    public Product FindProductById(String id) {
+    public Product FindProductById(long id) {
         return productRepository.findById(id);
     }
 
     public void Updateproduct(Product product) {
         Product productFromDb = productRepository.findById(product.getId());
         productFromDb.setStores(product.getStores());
-        productFromDb.setProductname(product.getProductname());
+        productFromDb.setProductName(product.getProductName());
         productFromDb.setPrice(product.getPrice());
         productRepository.save(productFromDb);
     }

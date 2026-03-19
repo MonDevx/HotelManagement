@@ -31,7 +31,7 @@ public class Store {
 
     public String Listnameproducts() {
         ArrayList<String> Productnames = new ArrayList<>();
-        for (Product temp : products) Productnames.add(temp.getProductname());
+        for (Product temp : products) Productnames.add(temp.getProductName());
         return Productnames.toString();
     }
 }

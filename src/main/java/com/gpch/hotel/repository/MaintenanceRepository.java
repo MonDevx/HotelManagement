@@ -5,10 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("maintenanceRepository")
-public interface MaintenanceRepository extends JpaRepository<Maintenance, Integer> {
-    Maintenance findById(String id);
+public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> {
+    Maintenance findById(long id);
 
     long countByStatus(String status);
 
-    void deleteById(String id);
+    void deleteById(long id);
 }

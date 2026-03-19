@@ -7,13 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository("employeeRepository")
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
-    Employee findById(String id);
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    Employee findById(long id);
 
     Long countByPositions(Position position);
 
     @Query("SELECT SUM(e.salary) FROM Employee e")
     Integer salarytTotals();
 
-    void deleteById(String id);
+    void deleteById(long id);
 }

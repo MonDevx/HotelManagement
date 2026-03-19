@@ -61,7 +61,7 @@ public class MaintenanceController {
     }
 
     @RequestMapping(value = "maintenances/delete_maintenance{id}", method = RequestMethod.GET)
-    public String Deletemaintenance(@RequestParam(name = "id") String id, RedirectAttributes redirectAttributes) {
+    public String Deletemaintenance(@RequestParam(name = "id") long id, RedirectAttributes redirectAttributes) {
         maintenanceService.DeleteMaintenanceById(id);
         redirectAttributes.addFlashAttribute("message", messageSource.getMessage("maintenance.d.s.text"
                 , null, LocaleContextHolder.getLocale()));
@@ -70,12 +70,12 @@ public class MaintenanceController {
 
     @RequestMapping(value = "maintenances/edit_maintenance{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Maintenance FindMaintenance(@RequestParam(name = "id") String id) {
+    public Maintenance FindMaintenance(@RequestParam(name = "id") long id) {
         return maintenanceService.FindMaintenanceById(id);
     }
 
     @RequestMapping(value = "maintenances/updatemaintenance{id}", method = RequestMethod.POST)
-    public ModelAndView UpdateMaintenance(@Valid Maintenance maintenance, @RequestParam(name = "id") String id, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ModelAndView UpdateMaintenance(@Valid Maintenance maintenance, @RequestParam(name = "id") long id, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         ModelAndView modelAndView = new ModelAndView();
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("message_error", bindingResult.getAllErrors());

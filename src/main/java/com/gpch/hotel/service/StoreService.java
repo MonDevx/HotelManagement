@@ -23,11 +23,11 @@ public class StoreService {
         return storeRepository.findAll();
     }
 
-    public void DeleteStoreById(int id) {
+    public void DeleteStoreById(long id) {
         storeRepository.deleteById(id);
     }
 
-    public Store FindStoreById(int id) {
+    public Store FindStoreById(long id) {
         return storeRepository.findById(id);
     }
 

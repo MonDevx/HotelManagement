@@ -39,7 +39,7 @@ public class StoresController {
     }
 
     @RequestMapping(value = "stores/delete_store{id}", method = RequestMethod.GET)
-    public String DeleteStores(@RequestParam(name = "id") int id, RedirectAttributes redirectAttributes) {
+    public String DeleteStores(@RequestParam(name = "id") long id, RedirectAttributes redirectAttributes) {
         storeService.DeleteStoreById(id);
         redirectAttributes.addFlashAttribute("message", messageSource.getMessage("store.d.s.text"
                 , null, LocaleContextHolder.getLocale()));
@@ -48,12 +48,12 @@ public class StoresController {
 
     @RequestMapping(value = "stores/edit_store{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Store FindUser(@RequestParam(name = "id") int id) {
+    public Store FindUser(@RequestParam(name = "id") long id) {
         return storeService.FindStoreById(id);
     }
 
     @RequestMapping(value = "stores/updatestore{id}", method = RequestMethod.POST)
-    public ModelAndView UpdateStore(@Valid Store store, BindingResult bindingResult, RedirectAttributes redirectAttributes,@RequestParam(name = "id") int id) {
+    public ModelAndView UpdateStore(@Valid Store store, BindingResult bindingResult, RedirectAttributes redirectAttributes,@RequestParam(name = "id") long id) {
         ModelAndView modelAndView = new ModelAndView();
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("message_error", bindingResult.getAllErrors());

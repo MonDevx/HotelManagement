@@ -46,7 +46,7 @@ public class EmployeesController {
     }
 
     @RequestMapping(value = "employees/delete_employee{id}", method = RequestMethod.GET)
-    public String DeleteEmployee(@RequestParam(name = "id") String id, RedirectAttributes redirectAttributes) {
+    public String DeleteEmployee(@RequestParam(name = "id") long id, RedirectAttributes redirectAttributes) {
         employeeService.DeleteEmployeeById(id);
         redirectAttributes.addFlashAttribute("message", messageSource.getMessage("employee.d.s.text"
                 , null, LocaleContextHolder.getLocale()));
@@ -55,13 +55,13 @@ public class EmployeesController {
 
     @RequestMapping(value = "employees/edit_employee{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Employee FindEmployeeByid(@RequestParam(name = "id") String id) {
+    public Employee FindEmployeeByid(@RequestParam(name = "id") long id) {
         return employeeService.FindEmployeeById(id);
     }
 
 
     @RequestMapping(value = "/employees/updateemployee{id}", method = RequestMethod.POST)
-    public ModelAndView Updateemployee(@Valid Employee employee,@RequestParam(name = "id") String id, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ModelAndView Updateemployee(@Valid Employee employee,@RequestParam(name = "id") long id, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         ModelAndView modelAndView = new ModelAndView();
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("message_error", bindingResult.getAllErrors());

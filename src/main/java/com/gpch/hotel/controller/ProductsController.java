@@ -49,7 +49,7 @@ public class ProductsController {
     }
 
     @RequestMapping(value = "products/delete_product{id}", method = RequestMethod.GET)
-    public String Deleteproduct(@RequestParam(name = "id") String id, RedirectAttributes redirectAttributes) {
+    public String Deleteproduct(@RequestParam(name = "id") long id, RedirectAttributes redirectAttributes) {
         productService.DeleteProductById(id);
         redirectAttributes.addFlashAttribute("message", messageSource.getMessage("product.d.s.text"
                 , null, LocaleContextHolder.getLocale()));
@@ -58,12 +58,12 @@ public class ProductsController {
 
     @RequestMapping(value = "products/edit_product{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Product FindProduct(@RequestParam(name = "id") String id) {
+    public Product FindProduct(@RequestParam(name = "id") long id) {
         return productService.FindProductById(id);
     }
 
     @RequestMapping(value = "products/updateproduct{id}", method = RequestMethod.POST)
-    public ModelAndView Updateproduct(@Valid Product product, BindingResult bindingResult, RedirectAttributes redirectAttributes, @RequestParam(name = "id") String id) {
+    public ModelAndView Updateproduct(@Valid Product product, BindingResult bindingResult, RedirectAttributes redirectAttributes, @RequestParam(name = "id") long id) {
         ModelAndView modelAndView = new ModelAndView();
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("message_error", bindingResult.getAllErrors());
