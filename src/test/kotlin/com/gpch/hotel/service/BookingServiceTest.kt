@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import java.time.LocalDate
@@ -47,6 +48,7 @@ class BookingServiceTest {
         assertEquals("booked", room.status)
         verify(bookingRepository).save(booking)
         verify(roomRepository).save(room)
+        verify(bookingRepository, times(1)).findAll()
     }
 
     @Test

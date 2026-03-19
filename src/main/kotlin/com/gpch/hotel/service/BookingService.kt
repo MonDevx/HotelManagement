@@ -33,10 +33,11 @@ class BookingService(
 
     fun findAvailableRooms(checkInDate: LocalDate, checkOutDate: LocalDate, roomTypeId: Long? = null, excludeBookingId: Long = 0): List<Room> {
         validateDates(checkInDate, checkOutDate)
+        val blockingBookings = findBlockingBookings(excludeBookingId)
         return roomRepository.findAll()
             .filter { roomTypeId == null || it.roomType?.id == roomTypeId }
             .filterNot { it.status.equals("maintenance", ignoreCase = true) }
-            .filter { room -> isRoomAvailable(room, checkInDate, checkOutDate, excludeBookingId) }
+            .filter { room -> isRoomAvailable(room, checkInDate, checkOutDate, blockingBookings) }
             .sortedBy { it.roomNumber ?: "" }
     }
 
@@ -99,10 +100,11 @@ class BookingService(
 
     private fun resolveRoom(booking: Booking, checkInDate: LocalDate, checkOutDate: LocalDate): Room {
         val preferredRoom = booking.room
+        val blockingBookings = findBlockingBookings(booking.id)
         if (preferredRoom?.id != null && preferredRoom.id != 0L) {
             val room = roomRepository.findById(preferredRoom.id).orElse(null)
                 ?: throw IllegalArgumentException("Selected room was not found")
-            if (!isRoomAvailable(room, checkInDate, checkOutDate, booking.id)) {
+            if (!isRoomAvailable(room, checkInDate, checkOutDate, blockingBookings)) {
                 throw IllegalArgumentException("Selected room is not available for the requested dates")
             }
             if (booking.roomType == null) {
@@ -112,15 +114,23 @@ class BookingService(
         }
 
         val roomTypeId = booking.roomType?.id ?: throw IllegalArgumentException("Room type is required")
-        return findAvailableRooms(checkInDate, checkOutDate, roomTypeId, booking.id).firstOrNull()
+        return roomRepository.findAll()
+            .filter { it.roomType?.id == roomTypeId }
+            .filterNot { it.status.equals("maintenance", ignoreCase = true) }
+            .filter { room -> isRoomAvailable(room, checkInDate, checkOutDate, blockingBookings) }
+            .sortedBy { it.roomNumber ?: "" }
+            .firstOrNull()
             ?: throw IllegalArgumentException("No rooms are available for the selected type and dates")
     }
 
-    private fun isRoomAvailable(room: Room, checkInDate: LocalDate, checkOutDate: LocalDate, excludeBookingId: Long): Boolean {
-        return bookingRepository.findAll()
-            .filter { it.id != excludeBookingId }
+    private fun findBlockingBookings(excludeBookingId: Long): List<Booking> = bookingRepository.findAll()
+        .filter { it.id != excludeBookingId }
+        .filter { it.room?.id != null }
+        .filter { blockingStatuses.contains(it.status.lowercase()) }
+
+    private fun isRoomAvailable(room: Room, checkInDate: LocalDate, checkOutDate: LocalDate, blockingBookings: List<Booking>): Boolean {
+        return blockingBookings
             .filter { it.room?.id == room.id }
-            .filter { blockingStatuses.contains(it.status.lowercase()) }
             .none {
                 val existingCheckIn = it.checkInDate ?: return@none false
                 val existingCheckOut = it.checkOutDate ?: return@none false
