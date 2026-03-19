@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{fragments/head :: head}"></div>
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div th:replace="~{fragments/topbar :: topbar}"></div>
+            <div class="container-fluid">
+                <h1 class="h3 mb-4 text-gray-800">Bookings &amp; check-in/out</h1>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Availability check</h6></div>
+                            <div class="card-body">
+                                <form method="get" th:action="@{/bookings/manage-bookings}">
+                                    <div class="form-group"><label>Room type</label><select class="form-control" name="availabilityRoomTypeId"><option value="">All room types</option><option th:each="type : ${roomTypes}" th:value="${type.id}" th:text="${type.name}" th:selected="${availabilityRoomTypeId == type.id}"></option></select></div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6"><label>Check-in</label><input class="form-control" type="date" name="availabilityCheckIn" th:value="${availabilityCheckIn}"></div>
+                                        <div class="form-group col-md-6"><label>Check-out</label><input class="form-control" type="date" name="availabilityCheckOut" th:value="${availabilityCheckOut}"></div>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm" type="submit">Check availability</button>
+                                </form>
+                                <hr>
+                                <div th:if="${!availableRooms.isEmpty()}">
+                                    <div class="small text-muted mb-2">Available rooms</div>
+                                    <span class="badge badge-success mr-1 mb-1" th:each="availableRoom : ${availableRooms}" th:text="${availableRoom.roomNumber}"></span>
+                                </div>
+                                <div class="text-muted small" th:if="${availableRooms.isEmpty() && !#strings.isEmpty(availabilityCheckIn) && !#strings.isEmpty(availabilityCheckOut)}">No rooms match the requested period.</div>
+                            </div>
+                        </div>
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary" th:text="${booking.id != 0 ? 'Edit booking' : 'New booking / walk-in'}"></h6></div>
+                            <div class="card-body">
+                                <div th:replace="~{fragments/message :: message}"></div>
+                                <form th:action="@{/bookings/save}" th:object="${booking}" method="post">
+                                    <input type="hidden" th:field="*{id}">
+                                    <div class="form-group"><label>Guest</label><select class="form-control" th:field="*{guest}" required><option value="">Select guest</option><option th:each="guest : ${guests}" th:value="${guest.id}" th:text="${guest.fullName()}"></option></select></div>
+                                    <div class="form-group"><label>Requested room type</label><select class="form-control" th:field="*{roomType}" required><option value="">Select room type</option><option th:each="type : ${roomTypes}" th:value="${type.id}" th:text="${type.name + ' ($' + type.price + ')'}"></option></select></div>
+                                    <div class="form-group"><label>Specific room (optional)</label><select class="form-control" th:field="*{room}"><option value="">Auto assign available room</option><option th:each="roomItem : ${rooms}" th:value="${roomItem.id}" th:text="${roomItem.roomNumber + ' - ' + roomItem.status}"></option></select></div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6"><label>Check-in</label><input class="form-control" type="date" th:field="*{checkInDate}" required></div>
+                                        <div class="form-group col-md-6"><label>Check-out</label><input class="form-control" type="date" th:field="*{checkOutDate}" required></div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6"><label>Guests</label><input class="form-control" type="number" min="1" th:field="*{guestCount}" required></div>
+                                        <div class="form-group col-md-6"><label>Status</label><select class="form-control" th:field="*{status}"><option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"></option></select></div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6"><label>Discount %</label><input class="form-control" type="number" min="0" max="100" th:field="*{discountPercent}"></div>
+                                        <div class="form-group col-md-6"><label>Promotion discount</label><input class="form-control" type="number" min="0" th:field="*{promotionDiscount}"></div>
+                                    </div>
+                                    <div class="form-group"><label>Promotion code</label><input class="form-control" th:field="*{promotionCode}"></div>
+                                    <div class="form-group"><label>Additional charges for checkout</label><input class="form-control" type="number" min="0" th:field="*{additionalCharges}"></div>
+                                    <div class="form-check mb-3"><input class="form-check-input" type="checkbox" th:field="*{walkIn}"><label class="form-check-label">Walk-in booking (check in immediately)</label></div>
+                                    <button class="btn btn-success btn-icon-split" type="submit"><span class="icon text-white-50"><i class="fas fa-save"></i></span><span class="text">Save booking</span></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Reservations, stays and outstanding balances</h6></div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Guest</th>
+                                            <th>Stay</th>
+                                            <th>Room</th>
+                                            <th>Status</th>
+                                            <th>Total</th>
+                                            <th>Paid</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="bookingItem : ${list}">
+                                            <td th:text="${bookingItem.id}"></td>
+                                            <td>
+                                                <div th:text="${bookingItem.guest != null ? bookingItem.guest.fullName() : '-'}"></div>
+                                                <div class="small text-muted" th:text="${bookingItem.guestCount + ' guest(s)'}"></div>
+                                            </td>
+                                            <td>
+                                                <div th:text="${bookingItem.checkInDate + ' → ' + bookingItem.checkOutDate}"></div>
+                                                <div class="small text-muted" th:text="${bookingItem.walkIn ? 'Walk-in' : 'Reservation'}"></div>
+                                            </td>
+                                            <td>
+                                                <div th:text="${bookingItem.room != null ? bookingItem.room.roomNumber : 'Auto assigned'}"></div>
+                                                <div class="small text-muted" th:text="${bookingItem.roomType != null ? bookingItem.roomType.name : '-'}"></div>
+                                            </td>
+                                            <td><span class="badge badge-info" th:text="${bookingItem.status}"></span></td>
+                                            <td th:text="${'$ ' + #numbers.formatDecimal(bookingItem.totalPrice, 0, 'COMMA', 2, 'POINT')}"></td>
+                                            <td>
+                                                <div th:text="${'$ ' + #numbers.formatDecimal(paymentService.totalPaidForBooking(bookingItem.id), 0, 'COMMA', 2, 'POINT')}"></div>
+                                                <div class="small text-danger" th:text="${'Balance: $' + #numbers.formatDecimal(bookingItem.totalPrice - paymentService.totalPaidForBooking(bookingItem.id), 0, 'COMMA', 2, 'POINT')}"></div>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-warning btn-circle btn-sm mb-1" th:href="@{/bookings/manage-bookings(editId=${bookingItem.id})}"><i class="fas fa-edit"></i></a>
+                                                <a class="btn btn-success btn-circle btn-sm mb-1" th:href="@{/bookings/check-in(id=${bookingItem.id})}"><i class="fas fa-sign-in-alt"></i></a>
+                                                <a class="btn btn-primary btn-circle btn-sm mb-1" th:href="@{/bookings/check-out(id=${bookingItem.id})}"><i class="fas fa-sign-out-alt"></i></a>
+                                                <a class="btn btn-secondary btn-circle btn-sm mb-1" th:href="@{/bookings/no-show(id=${bookingItem.id})}"><i class="fas fa-user-times"></i></a>
+                                                <a class="btn btn-danger btn-circle btn-sm mb-1" th:href="@{/bookings/cancel(id=${bookingItem.id})}"><i class="fas fa-ban"></i></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:insert="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+<div th:insert="~{fragments/scrolltop :: scrolltop}"></div>
+<script th:replace="~{fragments/script :: script}"></script>
+</body>
+</html>

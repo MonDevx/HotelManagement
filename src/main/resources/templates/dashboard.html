@@ -119,6 +119,68 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Room types</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${countroomtypes}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-layer-group fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Rooms available</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${countavailablerooms + ' / ' + countrooms}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-bed fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Active stays</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${countactivestays}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-door-open fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Occupancy rate</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${occupancyrate + '%'}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-chart-pie fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Bar Chart -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
@@ -129,6 +191,70 @@
                             <canvas id="myBarChart"></canvas>
                         </div>
                         <hr th:text="#{gd.text}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Booking report</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered table-sm mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Bookings</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Today</td>
+                                        <td th:text="${bookingstoday}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>This month</td>
+                                        <td th:text="${bookingsthismonth}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>This year</td>
+                                        <td th:text="${bookingsthisyear}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Revenue report</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered table-sm mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Revenue</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Today</td>
+                                        <td th:text="${'$ ' + #numbers.formatDecimal(revenuetoday, 0, 'COMMA', 2, 'POINT')}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>This month</td>
+                                        <td th:text="${'$ ' + #numbers.formatDecimal(revenuethismonth, 0, 'COMMA', 2, 'POINT')}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>This year</td>
+                                        <td th:text="${'$ ' + #numbers.formatDecimal(revenuethisyear, 0, 'COMMA', 2, 'POINT')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

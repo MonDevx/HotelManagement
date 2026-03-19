@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{fragments/head :: head}"></div>
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div th:replace="~{fragments/topbar :: topbar}"></div>
+            <div class="container-fluid">
+                <h1 class="h3 mb-4 text-gray-800">Room Types</h1>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary" th:text="${roomType.id != 0 ? 'Edit room type' : 'Add room type'}"></h6>
+                            </div>
+                            <div class="card-body">
+                                <div th:replace="~{fragments/message :: message}"></div>
+                                <form th:action="@{/room-types/save}" th:object="${roomType}" method="post">
+                                    <input type="hidden" th:field="*{id}">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input class="form-control" th:field="*{name}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Capacity</label>
+                                        <input type="number" min="1" class="form-control" th:field="*{capacity}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Price / night</label>
+                                        <input type="number" min="0" class="form-control" th:field="*{price}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Amenities</label>
+                                        <textarea class="form-control" th:field="*{amenities}" rows="3"></textarea>
+                                    </div>
+                                    <button class="btn btn-success btn-icon-split" type="submit"><span class="icon text-white-50"><i class="fas fa-save"></i></span><span class="text">Save room type</span></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Configured room types</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Capacity</th>
+                                            <th>Price</th>
+                                            <th>Amenities</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="type : ${list}">
+                                            <td th:text="${type.id}"></td>
+                                            <td>
+                                                <strong th:text="${type.name}"></strong>
+                                                <div class="small text-muted" th:text="${type.description}"></div>
+                                            </td>
+                                            <td th:text="${type.capacity}"></td>
+                                            <td th:text="${'$ ' + #numbers.formatDecimal(type.price, 0, 'COMMA', 2, 'POINT')}"></td>
+                                            <td th:text="${type.amenities}"></td>
+                                            <td>
+                                                <a class="btn btn-warning btn-circle btn-sm" th:href="@{/room-types/manage-room-types(editId=${type.id})}"><i class="fas fa-edit"></i></a>
+                                                <a class="btn btn-danger btn-circle btn-sm" th:href="@{/room-types/delete(id=${type.id})}"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:insert="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+<div th:insert="~{fragments/scrolltop :: scrolltop}"></div>
+<script th:replace="~{fragments/script :: script}"></script>
+</body>
+</html>
