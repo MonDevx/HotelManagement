@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.time.LocalDate
+import java.time.format.DateTimeParseException
 
 @Controller
 @RequestMapping("bookings")
@@ -35,6 +36,7 @@ class BookingsController(
     ): ModelAndView {
         val modelAndView = ModelAndView("bookings/manage-bookings")
         val bookings = bookingService.findAll()
+        var availabilityError: String? = null
         val availableRooms = if (!availabilityCheckIn.isNullOrBlank() && !availabilityCheckOut.isNullOrBlank()) {
             try {
                 bookingService.findAvailableRooms(
@@ -42,7 +44,11 @@ class BookingsController(
                     LocalDate.parse(availabilityCheckOut),
                     availabilityRoomTypeId
                 )
-            } catch (ex: RuntimeException) {
+            } catch (ex: DateTimeParseException) {
+                availabilityError = "Enter valid dates to check room availability"
+                emptyList()
+            } catch (ex: IllegalArgumentException) {
+                availabilityError = ex.message ?: "Unable to check room availability"
                 emptyList()
             }
         } else {
@@ -59,6 +65,7 @@ class BookingsController(
         modelAndView.addObject("availabilityCheckIn", availabilityCheckIn ?: "")
         modelAndView.addObject("availabilityCheckOut", availabilityCheckOut ?: "")
         modelAndView.addObject("availabilityRoomTypeId", availabilityRoomTypeId)
+        modelAndView.addObject("availabilityError", availabilityError)
         return modelAndView
     }
 

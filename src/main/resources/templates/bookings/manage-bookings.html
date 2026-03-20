@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <div th:replace="~{fragments/head :: head}"></div>
-</head>
+<head th:replace="~{fragments/head :: head}"></head>
 <body id="page-top">
 <div id="wrapper">
     <div th:replace="~{fragments/sidebar :: sidebar}"></div>
@@ -25,6 +23,7 @@
                                     <button class="btn btn-primary btn-sm" type="submit">Check availability</button>
                                 </form>
                                 <hr>
+                                <div class="alert alert-danger py-2 small" th:if="${availabilityError != null}" th:text="${availabilityError}"></div>
                                 <div th:if="${!availableRooms.isEmpty()}">
                                     <div class="small text-muted mb-2">Available rooms</div>
                                     <span class="badge badge-success mr-1 mb-1" th:each="availableRoom : ${availableRooms}" th:text="${availableRoom.roomNumber}"></span>

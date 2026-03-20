@@ -100,7 +100,7 @@ class BookingServiceTest {
     @Test
     fun `check out keeps maintenance room unchanged`() {
         val roomType = roomType(1L)
-        val room = room(11L, "102", roomType, status = "maintenance")
+        val room = room(11L, "102", roomType, status = "Maintenance")
         val booking = booking(id = 5L, roomType = roomType, room = room, status = "checked-in")
         `when`(bookingRepository.findById(5L)).thenReturn(Optional.of(booking))
         `when`(bookingRepository.save(booking)).thenReturn(booking)
@@ -108,7 +108,7 @@ class BookingServiceTest {
         val updated = bookingService.checkOut(5L)
 
         assertEquals("checked-out", updated.status)
-        assertEquals("maintenance", room.status)
+        assertEquals("Maintenance", room.status)
         verify(roomRepository, never()).save(room)
     }
 
@@ -120,6 +120,38 @@ class BookingServiceTest {
         assertThrows(IllegalArgumentException::class.java) {
             bookingService.save(booking)
         }
+    }
+
+    @Test
+    fun `count by status uses repository query`() {
+        `when`(bookingRepository.countByStatusIgnoreCase("checked-in")).thenReturn(4)
+
+        val count = bookingService.countByStatus("checked-in")
+
+        assertEquals(4, count)
+        verify(bookingRepository).countByStatusIgnoreCase("checked-in")
+        verify(bookingRepository, never()).findAll()
+    }
+
+    @Test
+    fun `save keeps previous maintenance room unchanged when reassigned`() {
+        val roomType = roomType(1L)
+        val oldRoom = room(10L, "101", roomType, status = "Maintenance")
+        val newRoom = room(11L, "102", roomType, status = "available")
+        val existing = booking(id = 8L, roomType = roomType, room = oldRoom)
+        val updated = booking(id = 8L, roomType = roomType, room = newRoom)
+        `when`(bookingRepository.findById(8L)).thenReturn(Optional.of(existing))
+        `when`(roomRepository.findById(11L)).thenReturn(Optional.of(newRoom))
+        `when`(bookingRepository.findAll()).thenReturn(emptyList())
+        `when`(bookingRepository.save(updated)).thenReturn(updated)
+        `when`(roomRepository.save(newRoom)).thenReturn(newRoom)
+
+        val saved = bookingService.save(updated)
+
+        assertEquals(newRoom, saved.room)
+        assertEquals("Maintenance", oldRoom.status)
+        verify(roomRepository, never()).save(oldRoom)
+        verify(roomRepository).save(newRoom)
     }
 
     private fun booking(

@@ -60,7 +60,10 @@ class BookingService(
 
         val existing = if (booking.id != 0L) findById(booking.id) else null
         val saved = bookingRepository.save(booking)
-        if (existing?.room?.id != null && existing.room?.id != saved.room?.id && existing.room?.status != "maintenance") {
+        if (existing?.room?.id != null &&
+            existing.room?.id != saved.room?.id &&
+            !existing.room?.status.equals("maintenance", ignoreCase = true)
+        ) {
             existing.room?.status = "available"
             roomRepository.save(existing.room!!)
         }
@@ -76,7 +79,7 @@ class BookingService(
 
     fun checkOut(id: Long): Booking = updateStatus(id, "checked-out")
 
-    fun countByStatus(status: String): Long = bookingRepository.findAll().count { it.status.equals(status, ignoreCase = true) }.toLong()
+    fun countByStatus(status: String): Long = bookingRepository.countByStatusIgnoreCase(status)
 
     fun bookingsBetween(start: LocalDate, end: LocalDate): List<Booking> = bookingRepository.findAll().filter {
         val checkIn = it.checkInDate
@@ -161,7 +164,7 @@ class BookingService(
 
     private fun updateRoomStatus(room: Room?, status: String) {
         if (room == null) return
-        if (room.status == "maintenance") return
+        if (room.status.equals("maintenance", ignoreCase = true)) return
         room.status = when (status) {
             "checked-in" -> "checked-in"
             "cancelled", "checked-out", "no-show" -> "available"
