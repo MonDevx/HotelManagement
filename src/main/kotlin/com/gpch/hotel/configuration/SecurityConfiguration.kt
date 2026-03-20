@@ -52,6 +52,8 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
             .antMatchers("/maintenances/add-maintenance").hasAnyAuthority("ADMIN", "STAFF", "MANAGER", "TECHNICIAN")
             .antMatchers("/stores/**").hasAnyAuthority("ADMIN", "STAFF", "MANAGER")
             .antMatchers("/products/**").hasAnyAuthority("ADMIN", "STAFF", "MANAGER")
+            .antMatchers("/room-types/**", "/rooms/**", "/guests/**", "/bookings/**", "/payments/**")
+            .hasAnyAuthority("ADMIN", "STAFF", "MANAGER")
             .antMatchers("/maintenances/**").hasAnyAuthority("ADMIN", "TECHNICIAN").anyRequest()
             .authenticated().and().csrf().disable().formLogin()
             .loginPage("/login").failureUrl("/login?error=true")

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body id="page-top">
+<div id="wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div th:replace="~{fragments/topbar :: topbar}"></div>
+            <div class="container-fluid">
+                <h1 class="h3 mb-4 text-gray-800">Payments</h1>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary" th:text="${payment.id != 0 ? 'Edit payment' : 'Record payment'}"></h6></div>
+                            <div class="card-body">
+                                <div th:replace="~{fragments/message :: message}"></div>
+                                <form th:action="@{/payments/save}" th:object="${payment}" method="post">
+                                    <input type="hidden" th:field="*{id}">
+                                    <div class="form-group"><label>Booking</label><select class="form-control" th:field="*{booking}" required><option value="">Select booking</option><option th:each="booking : ${bookings}" th:value="${booking.id}" th:text="${'#' + booking.id + ' - ' + (booking.guest != null ? booking.guest.fullName() : 'Guest')}"></option></select></div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6"><label>Amount</label><input class="form-control" type="number" min="1" th:field="*{amount}" required></div>
+                                        <div class="form-group col-md-6"><label>Date</label><input class="form-control" type="date" th:field="*{paymentDate}"></div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6"><label>Method</label><select class="form-control" th:field="*{paymentMethod}"><option th:each="method : ${methods}" th:value="${method}" th:text="${method}"></option></select></div>
+                                        <div class="form-group col-md-6"><label>Type</label><select class="form-control" th:field="*{paymentType}"><option th:each="paymentType : ${paymentTypes}" th:value="${paymentType}" th:text="${paymentType}"></option></select></div>
+                                    </div>
+                                    <div class="form-group"><label>Note</label><textarea class="form-control" th:field="*{note}" rows="3"></textarea></div>
+                                    <button class="btn btn-success btn-icon-split" type="submit"><span class="icon text-white-50"><i class="fas fa-save"></i></span><span class="text">Save payment</span></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Payment ledger</h6></div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Booking</th>
+                                            <th>Date</th>
+                                            <th>Method</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="paymentItem : ${list}">
+                                            <td th:text="${paymentItem.id}"></td>
+                                            <td>
+                                                <div th:text="${'#' + paymentItem.booking.id}"></div>
+                                                <div class="small text-muted" th:text="${paymentItem.booking.guest != null ? paymentItem.booking.guest.fullName() : '-'}"></div>
+                                                <div class="small text-danger" th:with="paid=${paidTotals[paymentItem.booking.id] != null ? paidTotals[paymentItem.booking.id] : 0}" th:text="${'Balance: $' + #numbers.formatDecimal(paymentItem.booking.totalPrice - paid, 0, 'COMMA', 2, 'POINT')}"></div>
+                                            </td>
+                                            <td th:text="${paymentItem.paymentDate}"></td>
+                                            <td th:text="${paymentItem.paymentMethod}"></td>
+                                            <td th:text="${paymentItem.paymentType}"></td>
+                                            <td th:text="${'$ ' + #numbers.formatDecimal(paymentItem.amount, 0, 'COMMA', 2, 'POINT')}"></td>
+                                            <td>
+                                                <a class="btn btn-warning btn-circle btn-sm" th:href="@{/payments/manage-payments(editId=${paymentItem.id})}"><i class="fas fa-edit"></i></a>
+                                                <a class="btn btn-danger btn-circle btn-sm" th:href="@{/payments/delete(id=${paymentItem.id})}"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:insert="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+<div th:insert="~{fragments/scrolltop :: scrolltop}"></div>
+<script th:replace="~{fragments/script :: script}"></script>
+</body>
+</html>

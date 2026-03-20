@@ -21,6 +21,17 @@ class DashboardController @Autowired constructor(
         modelAndView.addObject("countstores", dashboardService.countStores())
         modelAndView.addObject("sumsalary", dashboardService.sumSalary())
         modelAndView.addObject("countmaintenance", dashboardService.countMaintenance())
+        modelAndView.addObject("countroomtypes", dashboardService.countRoomTypes())
+        modelAndView.addObject("countrooms", dashboardService.countRooms())
+        modelAndView.addObject("countavailablerooms", dashboardService.countAvailableRooms())
+        modelAndView.addObject("countactivestays", dashboardService.countActiveStays())
+        modelAndView.addObject("occupancyrate", dashboardService.occupancyRate())
+        modelAndView.addObject("bookingstoday", dashboardService.countBookingsToday())
+        modelAndView.addObject("bookingsthismonth", dashboardService.countBookingsThisMonth())
+        modelAndView.addObject("bookingsthisyear", dashboardService.countBookingsThisYear())
+        modelAndView.addObject("revenuetoday", dashboardService.revenueToday())
+        modelAndView.addObject("revenuethismonth", dashboardService.revenueThisMonth())
+        modelAndView.addObject("revenuethisyear", dashboardService.revenueThisYear())
         for (temp in dashboardService.findAllPosition()) {
             surveyMap[temp.position_name ?: ""] = dashboardService.countPosition(temp)
         }
